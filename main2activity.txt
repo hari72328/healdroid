@@ -1,0 +1,26 @@
+package com.example.healthdroid;
+
+import android.os.Bundle;
+import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+
+public class Main2Activity extends AppCompatActivity {
+    public static TextView data;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main2);
+
+        data = (TextView) findViewById(R.id.fetcheddata);
+        fetchdata process = new fetchdata();
+        process.execute();
+
+
+    }
+}
+
+
+

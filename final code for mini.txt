@@ -1,0 +1,77 @@
+int value1=0;
+int value2=0;
+int prs=0; 
+int temp=0;
+
+#define SSID "Hotspot" //  SSID
+#define PASS "preranajagadale" //  password
+#define IP "184.106.153.149"//Thingspeak IP Address
+String GET = "GET /update?key=RRAHTK3CSQQF42Q5&field1="; //  write API key of the channel.
+
+void setup()
+{
+  Serial.begin(115200); //baud rate for ESP8266 and Serial Monitor
+  Serial.println("AT");
+  delay(1000);
+ 
+  if(Serial.find("OK")){
+    Serial.println("OK");
+    connectWiFi();
+    delay(1000);
+  }
+}
+
+void loop(){
+  
+  //Getting Temperature value and converting it to String
+  
+  value1=analogRead(A0);
+  value2=analogRead(A0);
+  
+  temp=value1*.48828125; // value*(5*100/1024) 
+   prs=value2;
+  String tempC=String(temp);// converting float value to String
+  String tempD=String(prs);
+
+  //Upload temperature value to thingspeak.com api
+  
+  String cmd = "AT+CIPSTART=\"TCP\",\"";//set up TCP connection
+  cmd += IP;
+  cmd += "\",80";
+  Serial.println(cmd);
+  delay(1000);
+    if(Serial.find("Error")){
+      Serial.println("AT+CIPSTART Error");
+      return;
+    }
+ 
+  cmd = GET;
+  cmd += tempC;
+ 
+  cmd += "&field2=";
+cmd += tempD;
+ cmd += "\r\n\r\n";
+
+  Serial.print("AT+CIPSEND=");//send TCP/IP data
+  Serial.println(cmd.length());
+  delay(1000);
+    if(Serial.find(">")){ 
+      Serial.print(cmd); 
+    }
+    else
+      Serial.println("AT+CIPSEND error");
+  delay(16000); // Thingspeak update the value at an interval of 15 secs.
+}
+
+//Connecting to WiFi when Arduino starts up.
+int connectWiFi(){
+  Serial.println("AT+CWMODE=3");//wifi mode
+  delay(1000);
+  String cmd="AT+CWJAP=\"";//join access point
+  cmd+=SSID;
+  cmd+="\",\"";
+  cmd+=PASS;
+  cmd+="\"";
+  Serial.println(cmd);
+  delay(15000); // takes some time to connect to WiFi and get an IP address
+}
