@@ -1,1 +1,1 @@
-# healdroid This app is connected to cloud and from that cloud the sensor data is fetched
+# healdroid healdroid is an app which can be used by anyone including doctors to monitor the patient's health from any place by connecting the healdroid app and the wearable device which contains sensors ae connected to the interner
